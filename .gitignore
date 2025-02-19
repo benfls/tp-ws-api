@@ -1,0 +1,58 @@
+# phpstorm files
+.idea/*
+
+# Cache, session files and logs (Symfony3)
+/var/cache/*
+/var/log/*
+/var/sessions/*
+!var/cache/.gitkeep
+!var/log/.gitkeep
+!var/sessions/.gitkeep
+
+# Managed by Composer
+/var/bootstrap.php.cache
+/bin/*
+!bin/console
+!bin/symfony_requirements
+/vendor/
+
+# Build data
+/build/
+
+# Backup entities generated with doctrine:generate:entities command
+**/Entity/*~
+
+# Embedded web-server pid file
+/.web-server-pid
+/.php_cs.cache
+/.idea/.gitignore
+/var/jwt/
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+/config/jwt_test/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+###< symfony/phpunit-bridge ###
+/docker/data/

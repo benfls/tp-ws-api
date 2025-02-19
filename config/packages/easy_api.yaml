@@ -1,0 +1,10 @@
+easy_api:
+  authentication: true
+  user_class: App\Entity\User\User
+  user_tracking:
+    enable: true
+    connection_history_class: App\Entity\User\ConnectionHistory
+  inheritance:
+    controller: App\Controller\AbstractSimpleApiController
+  tests:
+    debug: '%tests_debug%'

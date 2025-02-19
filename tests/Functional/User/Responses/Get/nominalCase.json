@@ -1,0 +1,7 @@
+{
+    "id": 1,
+    "createdAt": "2021-05-14T18:06:30+00:00",
+    "updatedAt": "\\assertDateTime()",
+    "username": "[API-TESTS]",
+    "email": "api-tests@example.com"
+}

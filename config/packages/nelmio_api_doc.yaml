@@ -1,0 +1,177 @@
+nelmio_api_doc:
+    areas:
+        default:
+            path_patterns: [ ^/(?!(_|api-doc)) ] # ne commence pas par _ ni api-doc
+        user:
+            path_patterns: [ ^/user ]
+    documentation:
+        info:
+            title: 'API'
+            description: 'API documentation'
+            version: 1.0.0
+        security:
+            - Bearer: []
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+            schemas:
+                security_auth:
+                    $ref: '#/components/schemas/security_auth'
+                    description: 'Resource moved permanently.'
+                    type: object
+                    properties:
+                        token:
+                            $ref: '#/components/schemas/security_auth_token'
+                        refresh_token:
+                            $ref: '#/components/schemas/security_auth_refresh_token'
+                security_auth_refresh:
+                    $ref: '#/components/schemas/security_auth'
+                    description: 'Resource moved permanently.'
+                    type: object
+                    properties:
+                        refresh_token:
+                            $ref: '#/components/schemas/security_auth_refresh_token'
+                security_auth_token:
+                    $ref: '#/components/schemas/security_auth_token'
+                    description: 'Token.'
+                    type: string
+                    example: 'fdb8fdbecf1d03ce5e6125c067733c0d51de209c'
+                security_auth_refresh_token:
+                    $ref: '#/components/schemas/security_auth_refresh_token'
+                    description: 'Refresh token.'
+                    type: string
+                    example: 'fdb8fdbecf1d03ce5e6125c067733c0d51de209c'
+                error:
+                    description: 'Error messages'
+                    type: string
+                    example: 'error.dummy.error_key'
+                204:
+                    ref: '#/components/schemas/204'
+                    description: 'Successful operation.'
+                    type: object
+                301:
+                    $ref: '#/components/schemas/error'
+                    description: 'Resource moved permanently.'
+                    type: object
+                302:
+                    ref: '#/components/schemas/302'
+                    description: 'Resource moved temporarily.'
+                    type: object
+                400:
+                    ref: '#/components/schemas/400'
+                    description: 'Bad request.'
+                    type: object
+                401:
+                    $ref: '#/components/schemas/error'
+                    description: 'Authentication is required.'
+                    type: object
+                403:
+                    $ref: '#/components/schemas/error'
+                    description: 'You are not allowed to access this resource.'
+                    type: object
+                404:
+                    $ref: '#/components/schemas/error'
+                    description: 'Resource not found.'
+                    type: object
+                405:
+                    $ref: '#/components/schemas/error'
+                    description: 'Method Not Allowed.'
+                    type: object
+                408:
+                    $ref: '#/components/schemas/error'
+                    description: 'Request time-out.'
+                    type: object
+                415:
+                    $ref: '#/components/schemas/error'
+                    description: 'Resource not found.'
+                    type: object
+                422:
+                    $ref: '#/components/schemas/error'
+                    description: 'Unprocessable Entity.'
+                    type: object
+            parameters:
+                # authentication
+                authorization:
+                    name: "Authorization"
+                    in: "header"
+                    description: "JWT token."
+                    required: true
+                anonymous_authorization:
+                    parameter: "authorization"
+                    name: "Authorization"
+                    in: "header"
+                    description: "JWT token."
+                    required: true
+                refresh_token:
+                    name: 'Refresh token'
+                    in: query
+                    required: true
+                    schema:
+                        type: object
+                        required: [ 'refreshToken' ]
+                        properties:
+                            refreshToken:
+                                type: string
+                                description: 'Refresh token'
+                                example: 'fdb8fdbecf1d03ce5e6125c067733c0d51de209c'
+                user_token:
+                    name: "resetToken"
+                    in: "query"
+                    description: "Token needed to find user."
+                    required: true
+                    schema:
+                        type: "string"
+                user_username:
+                    name: "username"
+                    in: "query"
+                    description: "Username of user"
+                    required: true
+                    schema:
+                        type: "string"
+                user_password:
+                    name: "newPassword"
+                    in: "query"
+                    description: "New password of user"
+                    required: true
+                    schema:
+                        type: "string"
+#                # queries
+#                createData:
+#                    name: data
+#                    in: "body"
+#                    description: "Create data."
+#                    required: true
+#                updateData:
+#                    name: data
+#                    in: "body"
+#                    description: "Update data."
+#                    required: true
+        paths:
+            /token/refresh:
+                post:
+                    tags: [ 'Authentication' ]
+            /authenticate:
+                post:
+                    tags: [ 'Authentication' ]
+                    summary: 'Get a connection token to access API.'
+                    description: 'This method provides an access token if credentials are valid.'
+                    requestBody:
+                        description: Client public token
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    required: [ 'username', 'password' ]
+                                    properties:
+                                        username:
+                                            type: string
+                                            description: 'Username'
+                                            example: 'j.doe@mail.com'
+                                        password:
+                                            type: string
+                                            description: 'Password'
+                                            example: 'p@ssword'

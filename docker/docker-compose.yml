@@ -1,0 +1,38 @@
+version: "3.3"
+services:
+    db:
+        container_name: db
+        image: mariadb:10.3
+        ports:
+            - "3306:3306"
+        environment:
+            - MARIADB_ROOT_PASSWORD=easyma
+        volumes:
+            - ./data/dev:/var/lib/mysql/
+        networks:
+          - local
+    api:
+        container_name: "api"
+        image: citizen63000/ubuntu-php-mariadb:1.0
+#        build: .
+        depends_on:
+            - db
+        ports:
+           - 8080:8080
+        volumes:
+           - ../:/var/www/app/
+           - ./app.conf:/etc/apache2/sites-available/app.conf
+           - ./ports.conf:/etc/apache2/ports.conf
+        networks:
+           - local
+    phpmyadmin:
+        container_name: "phpmyadmin"
+        image: phpmyadmin
+        depends_on:
+            - db
+        ports:
+           - 8081:80
+        networks:
+           - local
+networks:
+  local:

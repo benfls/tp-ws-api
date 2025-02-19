@@ -1,0 +1,40 @@
+parameters:
+  router.request_context.scheme: https
+  router.request_context.host: localhost
+  asset.request_context.secure: true
+  tests_debug: true
+  secret: '%env(resolve:APP_SECRET)%'
+
+  jwt_token_authorization_header_prefix: Bearer
+  jwt_refresh_token_ttl: '%env(int:JWT_REFRESH_TOKEN_TTL)%'
+
+  web_dir: '%kernel.project_dir%/public'
+  private_dir: '%kernel.project_dir%/../private'
+  mailer_delivery_address: yourmail@mail.com
+  from_email_adress: no-reply@mail.com
+  from_email_sender_name: API
+  api_base_url: 'https://localhost'
+  front_base_url: 'http://localhost:4200'
+
+services:
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  App\Controller\:
+    resource: '../src/Controller/'
+    tags: ['controller.service_arguments']
+
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
