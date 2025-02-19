@@ -1,7 +1,6 @@
-version: "3.3"
 services:
-    db:
-        container_name: db
+    tp-ws-db:
+        container_name: tp-ws-db
         image: mariadb:10.3
         ports:
             - "3306:3306"
@@ -11,12 +10,12 @@ services:
             - ./data/dev:/var/lib/mysql/
         networks:
           - local
-    api:
-        container_name: "api"
+    tp-ws-api:
+        container_name: "tp-ws-api"
         image: citizen63000/ubuntu-php-mariadb:1.0
 #        build: .
         depends_on:
-            - db
+            - tp-ws-db
         ports:
            - 8080:8080
         volumes:
@@ -25,13 +24,15 @@ services:
            - ./ports.conf:/etc/apache2/ports.conf
         networks:
            - local
-    phpmyadmin:
+    tp-ws-phpmyadmin:
         container_name: "phpmyadmin"
         image: phpmyadmin
         depends_on:
-            - db
+            - tp-ws-db
         ports:
            - 8081:80
+        environment:
+          PMA_HOST: tp-ws-db
         networks:
            - local
 networks:
