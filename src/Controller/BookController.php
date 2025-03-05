@@ -89,7 +89,6 @@ class BookController extends AbstractSimpleApiController
      * @OpenApi\Annotations\Response(response=200, description="Successful operation"),
      * @OA\Response(response=404, description="Entity not found"),
      */
-
     public function update(Request $request): Response
     {
         $entity = $this->getEntityOfRequest($request);
@@ -105,5 +104,4 @@ class BookController extends AbstractSimpleApiController
 
         $this->throwUnprocessableEntity($form);
     }
-
 }
