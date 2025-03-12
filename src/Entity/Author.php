@@ -74,45 +74,4 @@ class Author extends AbstractBaseEntity
     {
         $this->nationality = $nationality;
     }
-
-    /**
-     * @ORM\OneToMany(targetEntity=Book::class, mappedBy="author")
-     */
-    protected Collection $books;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->books = new ArrayCollection();
-    }
-
-    /**
-     * @return Collection|Book[]
-     */
-    public function getBooks(): Collection
-    {
-        return $this->books;
-    }
-
-    public function addBook(Book $book): self
-    {
-        if (!$this->books->contains($book)) {
-            $this->books[] = $book;
-            $book->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBook(Book $book): self
-    {
-        if ($this->books->removeElement($book)) {
-            // set the owning side to null (unless already changed)
-            if ($book->getAuthor() === $this) {
-                $book->setAuthor(null);
-            }
-        }
-
-        return $this;
-    }
 }
