@@ -17,49 +17,42 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  * @Route("/message", name="message")
  * @OA\Tag(name="Messages")
  */
-class MessageController extends AbstractController
+class MessageController extends AbstractSimpleApiController
 {
+    public const entityClass = Message::class;
+    public const entityCreateTypeClass = MessageType::class;
+
     /**
      * @Route("", methods={"POST"}, name="_create")
+     *
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(ref=@Model(type=self::entityCreateTypeClass))
+     * ),
+     * @OA\Response(response=201, description="Message created successfully"),
+     * @OA\Response(response=400, description="Invalid data"),
      */
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request): Response
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $message = new Message();
-        $form = $this->createForm(MessageType::class, $message);
+        $form = $this->createForm(static::entityCreateTypeClass);
         $form->submit($request->request->all());
-
         if ($form->isValid()) {
-            $em->persist($message);
-            $em->flush();
-
-            if ($message->getType() === 'text') {
-                // Appeler un LLM (ChatGPT, etc.)
-                $response = "Réponse du chatbot : " . strtoupper($message->getContent());
-            } else {
-                // Appeler un générateur d'image (DALL·E, etc.)
-                $response = "Lien de l'image générée pour : " . $message->getContent();
-            }
-
-            return $this->json([
-                'message' => $message->getContent(),
-                'response' => $response,
-            ], Response::HTTP_CREATED);
+            $entity = $this->persistAndFlush($form->getData());
+            return static::renderEntityResponse($entity, static::serializationGroups, [], Response::HTTP_CREATED);
         }
-
-        return $this->json(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
+        $this->throwUnprocessableEntity($form);
     }
 
     /**
      * @Route("", methods={"GET"}, name="_getAll")
+     *
+     * @OA\Response(response=200, description="Successful operation"),
      */
-    public function getAll(EntityManagerInterface $em): Response
+    public function getAll()
     {
-        $messages = $em->getRepository(Message::class)->findBy(['user' => $this->getUser()]);
-        return $this->json($messages, Response::HTTP_OK, [], ['groups' => 'message_read']);
+        // on demande à Doctrine toutes les entités de la classe
+        $entities = $this->getRepository(self::entityClass)->findAll();
+        // on les retourne sérialisées en json
+        return static::renderEntityResponse($entities, static::serializationGroups, [], Response::HTTP_OK, []);
     }
 }
